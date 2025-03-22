@@ -15,7 +15,7 @@ const authCheck = async (req: Request, res: Response, next: NextFunction) => {
     console.log("valid", valid);
 
     if (valid) {
-      next();
+      return next();
     } else {
       return next("not authenticated");
     }

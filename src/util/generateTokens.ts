@@ -20,12 +20,13 @@ const generateTokens = async (user: { id: string; name: string }) => {
 
   const refreshToken = await crypto.randomUUID();
 
-  //store refresh token in session table in database for 7 days to create a new access token when access token expires
+  //if session already exists in db clear the session to store new refresh token
   await prisma.session.deleteMany({
     where: {
       userId: user.id,
     },
   });
+  //store refresh token in session table in database for 7 days to create a new access token when access token expires
   await prisma.session.create({
     data: {
       refreshToken: refreshToken,

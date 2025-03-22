@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "tsc && node dist/index.js",
-    "test": "jest --watch --verbose"
+    "test": "jest --watch --verbose",
+    "coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
