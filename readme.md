@@ -43,3 +43,16 @@ Run `npx prisma` to see list of options available to execute for various usecase
   /logout - clear session from session table
 
   2. created authCheck middleware which check user access token from header and if valid then moves to next else throws error.
+
+- Jest test setup:
+
+  1. To set up jest with typescript install `ts-jest` as dev dependency and create jest.config.ts with following code snippet to make jest work with typescript and esm (by default jest works on commonjs modules)
+
+  ```
+  module.exports = {
+  preset: "ts-jest",
+  transform: {
+    "^.+\\.(ts|tsx)?$": "ts-jest",
+  },
+  };
+  ```
