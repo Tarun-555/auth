@@ -38,14 +38,14 @@ export const signUpController = async (
       name: user.name,
     });
     // next();
-    res.status(200).json({
+    return res.status(200).json({
       message: "user created successfully",
       user: user.name,
       accessToken,
       refreshToken,
     });
   } else {
-    res.status(400).json("Bad request");
+    return res.status(400).json("Bad request");
   }
 };
 
@@ -80,17 +80,17 @@ export const loginController = async (
         id: user.id,
         name: user.name,
       });
-      res.status(200).json({
+      return res.status(200).json({
         message: "user logged in successfully",
         user: user.name,
         accessToken,
         refreshToken,
       });
     } else {
-      res.status(400).json("Invalid credentials");
+      return res.status(400).json("Invalid credentials");
     }
   } else {
-    res.status(400).json("Bad request");
+    return res.status(400).json("Bad request");
   }
 };
 
@@ -123,13 +123,15 @@ export const refreshTokenController = async (
     return;
   }
 
+  // console.log("session ==", session);
   //if session found and not expired generate only new access token and send it to client
-  if (session && session.expiresAt > new Date()) {
-    console.log("session valid:", session.expiresAt > new Date());
+  if (session && new Date(session.expiresAt) > new Date()) {
     // res.status(400).json("refresh token valid");
+
     const user = await prisma.user.findUnique({
       where: { id: session.userId },
     });
+    console.log("session valid:", session.expiresAt > new Date(), user);
     const newAccessToken = await generateAccessToken({
       id: session.userId,
       name: user?.name as string,
@@ -158,6 +160,7 @@ export const logoutController = async (
   const { refreshToken } = req.body;
 
   // if refresh token not found in request body
+
   if (refreshToken) {
     const session = await prisma.session.deleteMany({
       where: { refreshToken: refreshToken },
