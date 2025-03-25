@@ -1,14 +1,19 @@
 import express from "express";
+import morgan from "morgan";
 const app = express();
 require("dotenv").config();
 import routes from "./routes/login";
 // import { generateTokens } from "./util/generateTokens";
 import { authCheck } from "./middleware/authCheck";
+import { prisma } from "./util/prismaInit";
+import { error } from "console";
+import { logger } from "./util/logger";
 
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json()); // used for parsing json sent through req.body
 app.use(express.urlencoded({ extended: true })); //middleware in Express.js used to handle form submissions sent in application/x-www-form-urlencoded format.
+app.use(morgan("dev")); //logger for dev
 
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -24,4 +29,14 @@ app.use("/api/protected", authCheck, (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port : ${PORT}`);
+  logger.info("connected to server");
+  prisma
+    .$connect()
+    .then((res) => {
+      console.log("db connected");
+    })
+    .catch((error) => {
+      console.log("error in connecting DB: ", error);
+      logger.error("failed to connect DB");
+    });
 });

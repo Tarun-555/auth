@@ -56,3 +56,10 @@ Run `npx prisma` to see list of options available to execute for various usecase
   },
   };
   ```
+
+- Logger setup:
+  Run `npm i morgan` and it types `@types/morgan`. This library is HTTP request logger middleware for node.js and used to log the req and res in cleaner format based on config.
+
+  morgan("dev") - results in following format `GET /api/protected 500 11.718 ms - 144`
+
+  Run `npm i winston` which can be used to create custom logs which can be used to logs cleaner with proper formating and information based on config
