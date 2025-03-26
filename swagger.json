@@ -1,0 +1,92 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Parveen App API",
+      "description": "Find out how your APIs work",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:3002",
+    "basePath": "/api",
+    "tags": [
+    
+    ],
+    "schemes": [
+      "http",
+      "https"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "securityDefinitions": {
+        "ApiKeyAuth":{
+          "type": "apiKey",
+          "in": "headers",
+          "name": "authorization"
+        }
+    },
+    "paths": {
+      "/refresh-token": {
+        "post": {
+          "summary": "use refresh token to get new access token",
+          "tags": [
+          ],
+          "description": "get new access token",
+          "parameters": [
+            {
+              "refreshToken": "refresh-token",
+              "in": "body",
+              "description": "refresh token",
+              "schema": {
+                "$ref": "#/definitions/RefreshToken"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "created new access token",
+              "schema": {
+                "$ref": "#/definitions/AccessToken"
+              }
+            },
+            "401":{
+              "description": "refresh token in not valid"
+            },
+            "500":{
+              "description": "User login failed!!"
+            }
+          }
+        }
+      }
+    },
+
+    "definitions": {
+
+      "RefreshToken": {
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        }
+      },
+      "AccessToken":{
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          }
+        }
+      }
+
+
+
+    }
+  }

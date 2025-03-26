@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { prisma } from "./prismaInit";
+import { prisma } from "../config/prismaInit";
 
 const generateTokens = async (user: { id: string; name: string }) => {
   const accessToken = jwt.sign(

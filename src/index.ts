@@ -2,12 +2,14 @@ import express from "express";
 import morgan from "morgan";
 const app = express();
 require("dotenv").config();
-import routes from "./routes/login";
+import authRoutes from "./routes/login";
 // import { generateTokens } from "./util/generateTokens";
 import { authCheck } from "./middleware/authCheck";
-import { prisma } from "./util/prismaInit";
-import { error } from "console";
+import { prisma } from "./config/prismaInit";
 import { logger } from "./util/logger";
+import swaggerUI from "swagger-ui-express";
+import { openApiSpecs } from "./config/swagger";
+import swaagerDoc from "./../swagger.json";
 
 const PORT = process.env.PORT || 3001;
 
@@ -19,7 +21,9 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.use("/api", routes);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaagerDoc));
+
+app.use("/api", authRoutes); // auth routes
 
 /* protected route where authCheck middleware check for jwt token */
 app.use("/api/protected", authCheck, (req, res) => {

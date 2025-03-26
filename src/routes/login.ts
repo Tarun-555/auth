@@ -2,11 +2,10 @@ import {
   logoutController,
   refreshTokenController,
   signUpController,
+  loginController,
 } from "../controllers/login";
 
 const router = require("express").Router();
-
-const { loginController } = require("../controllers/login");
 
 router.post("/signup", signUpController);
 

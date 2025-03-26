@@ -63,3 +63,7 @@ Run `npx prisma` to see list of options available to execute for various usecase
   morgan("dev") - results in following format `GET /api/protected 500 11.718 ms - 144`
 
   Run `npm i winston` which can be used to create custom logs which can be used to logs cleaner with proper formating and information based on config
+
+  -Swagger setup:
+
+  Swagger is used for api documentation [TODO: Needs to be updated with all api, current implementaionincludes basic setup]

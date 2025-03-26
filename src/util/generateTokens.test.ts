@@ -4,7 +4,7 @@ import {
   generateAccessToken,
   verifyToken,
 } from "./generateTokens";
-import { prisma } from "./prismaInit";
+import { prisma } from "../config/prismaInit";
 import crypto from "crypto";
 
 //mock external dependencies

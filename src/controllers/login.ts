@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { prisma } from "../util/prismaInit";
+import { prisma } from "../config/prismaInit";
 import { generateAccessToken, generateTokens } from "../util/generateTokens";
 
 type User = {
