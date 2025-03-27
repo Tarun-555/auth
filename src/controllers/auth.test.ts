@@ -7,7 +7,7 @@ import {
   logoutController,
   refreshTokenController,
   signUpController,
-} from "./login";
+} from "./auth";
 
 jest.mock("express");
 jest.mock("bcrypt");

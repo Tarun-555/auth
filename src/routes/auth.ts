@@ -3,7 +3,8 @@ import {
   refreshTokenController,
   signUpController,
   loginController,
-} from "../controllers/login";
+  forgotPasswordController,
+} from "../controllers/auth";
 
 const router = require("express").Router();
 
@@ -12,6 +13,8 @@ router.post("/signup", signUpController);
 router.post("/login", loginController);
 
 router.post("/refresh-token", refreshTokenController);
+
+router.post("/forgot-password", forgotPasswordController);
 
 router.post("/logout", logoutController);
 

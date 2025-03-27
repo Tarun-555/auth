@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { prisma } from "../config/prismaInit";
 import { generateAccessToken, generateTokens } from "../util/generateTokens";
+import { mailService } from "../util/mailService";
+import { logger } from "../util/logger";
 
 type User = {
   username: string;
@@ -170,4 +172,29 @@ export const logoutController = async (
   }
   res.status(200).json("logout successful");
   return;
+};
+
+export const forgotPasswordController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await mailService.sendMail({
+      from: "auth@testmail.com",
+      to: "test@gmail.com",
+      subject: "Forgot Password",
+      html: `<div>here is the otp to reset password</div>`,
+    });
+
+    console.log(result);
+
+    if (result.response) {
+      logger.info("Email sent successfully!!");
+      return res.status(200).json("email sent");
+    }
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).json("internal server error");
+  }
 };

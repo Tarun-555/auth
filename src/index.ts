@@ -2,13 +2,13 @@ import express from "express";
 import morgan from "morgan";
 const app = express();
 require("dotenv").config();
-import authRoutes from "./routes/login";
+import authRoutes from "./routes/auth";
 // import { generateTokens } from "./util/generateTokens";
 import { authCheck } from "./middleware/authCheck";
 import { prisma } from "./config/prismaInit";
 import { logger } from "./util/logger";
 import swaggerUI from "swagger-ui-express";
-import { openApiSpecs } from "./config/swagger";
+// import { openApiSpecs } from "./config/swagger";
 import swaagerDoc from "./../swagger.json";
 
 const PORT = process.env.PORT || 3001;
