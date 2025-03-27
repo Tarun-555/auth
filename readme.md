@@ -1,4 +1,4 @@
-# Node Auth Strategies
+# Node Auth JWT Strategy
 
 - Initial server setup and folders.
 
