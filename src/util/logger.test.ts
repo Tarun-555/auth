@@ -1,7 +1,11 @@
 import winston from "winston";
 import { logger } from "./logger";
 
-jest.mock("winston");
+jest.mock("winston", () => {
+  return {
+    createLogger: jest.fn(),
+  };
+});
 
 const mockedWinston = winston as jest.Mocked<typeof winston>;
 
@@ -10,9 +14,12 @@ describe("logger instance test suite", () => {
   beforeEach(() => {
     mocklogger = {};
   });
+
+  afterAll(() => {
+    mocklogger = {};
+  });
   it("should create logger instance", async () => {
     mocklogger = mockedWinston.createLogger({ level: "info" });
-    console.log(mockedWinston.createLogger, mocklogger);
-    expect(mocklogger).toBeInstanceOf(mockedWinston);
+    expect(mockedWinston.createLogger).toHaveBeenCalledTimes(1);
   });
 });

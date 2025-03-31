@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
+  id        String     @id @default(cuid())
+  email     String     @unique
   name      String
   password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   session   session[]
+  userotps  userotps[]
 }
 
 model session {
@@ -30,4 +31,12 @@ model session {
   refreshToken String
   createdAt    DateTime @default(now())
   expiresAt    DateTime
+}
+
+model userotps {
+  id        String   @id @default(cuid())
+  userId    String
+  otp       String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
 }

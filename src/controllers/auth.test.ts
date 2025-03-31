@@ -11,7 +11,7 @@ import {
 
 jest.mock("express");
 jest.mock("bcrypt");
-jest.mock("../util/prismaInit", () => {
+jest.mock("../config/prismaInit", () => {
   return {
     prisma: {
       user: {

@@ -4,6 +4,7 @@ import { prisma } from "../config/prismaInit";
 import { generateAccessToken, generateTokens } from "../util/generateTokens";
 import { mailService } from "../util/mailService";
 import { logger } from "../util/logger";
+import { generateOTP } from "../util/otpGenerator";
 
 type User = {
   username: string;
@@ -179,22 +180,104 @@ export const forgotPasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json("email not provided");
+  }
+
+  const isEmailExists = await prisma.user.findUnique({
+    where: { email: email },
+  });
+  console.log("loggonf", isEmailExists);
+
+  if (isEmailExists) {
+    const OTP = generateOTP();
+    try {
+      const result = await mailService.sendMail({
+        from: "auth@testmail.com",
+        to: "test@gmail.com",
+        subject: "Forgot Password",
+        html: `<div>Please use this ${OTP} to verify you account.</div>`,
+      });
+
+      // console.log(result);
+
+      if (result.response) {
+        logger.info("Email sent with OTP");
+        const ifPrevOtpsExists = await prisma.userotps.findFirst({
+          where: { userId: isEmailExists.id },
+        });
+        if (ifPrevOtpsExists) {
+          await prisma.userotps.deleteMany({
+            where: { userId: isEmailExists.id },
+          });
+        }
+        const storeOtpinDB = await prisma.userotps.create({
+          data: {
+            userId: isEmailExists.id,
+            otp: OTP,
+            expiresAt: new Date(Date.now() + 1000 * 60), // make this OTP valid for next 1 min
+          },
+        });
+        return res.status(200).json("Email with OTP sent successfully!!");
+      }
+    } catch (error) {
+      logger.error(error);
+      return res.status(500).json("internal server error");
+    }
+  } else {
+    return res.status(400).json("user with email doesn't exist!");
+  }
+};
+
+export const verifyOTPController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { otp } = req.body;
+  if (!otp) {
+    return res.status(400).json("please provide otp to verify!");
+  }
+
   try {
-    const result = await mailService.sendMail({
-      from: "auth@testmail.com",
-      to: "test@gmail.com",
-      subject: "Forgot Password",
-      html: `<div>here is the otp to reset password</div>`,
+    const getUserwithOtp = await prisma.userotps.findFirst({
+      where: { otp: otp, AND: { expiresAt: { gt: new Date() } } },
     });
 
-    console.log(result);
-
-    if (result.response) {
-      logger.info("Email sent successfully!!");
-      return res.status(200).json("email sent");
+    if (getUserwithOtp) {
+      logger.info("valid OTP");
+      return res.status(200).json("valid OTP");
+    } else {
+      logger.info("invalid OTP");
+      return res.status(400).json("invalid OTP");
     }
-  } catch (error) {
-    logger.error(error);
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json("internal server error");
+  }
+};
+
+export const resetPasswordController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, newPassword, confirmPassword } = req.body;
+  if (!newPassword || !confirmPassword || newPassword !== confirmPassword) {
+    return res.status(400).json("bad request");
+  }
+
+  try {
+    const hashPassword = await bcrypt.hashSync(newPassword, 10);
+    const updateUserPassword = await prisma.user.update({
+      data: { password: hashPassword },
+      where: { email: email },
+    });
+    return res.status(200).json("reset password successfully!");
+  } catch (err) {
+    logger.error(err);
     return res.status(500).json("internal server error");
   }
 };

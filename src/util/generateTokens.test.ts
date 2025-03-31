@@ -10,7 +10,7 @@ import crypto from "crypto";
 //mock external dependencies
 jest.mock("jsonwebtoken");
 jest.mock("crypto");
-jest.mock("./prismaInit", () => {
+jest.mock("../config/prismaInit", () => {
   return {
     prisma: {
       session: {
